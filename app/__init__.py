@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 db = SQLAlchemy()
 login_manager = LoginManager()
 mail = Mail()
+
 
 def create_app():
     load_dotenv()
@@ -29,6 +30,9 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_HOST_PASSWORD')
     app.config['MAIL_DEFAULT_SENDER'] = os.getenv('DEFAULT_FROM_EMAIL', os.getenv('EMAIL_HOST_USER'))
 
+    # NEW: allow disabling outbound mail without code changes
+    app.config['MAIL_SUPPRESS_SEND'] = os.getenv('MAIL_SUPPRESS_SEND', 'False') == 'True'
+
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
@@ -40,6 +44,13 @@ def create_app():
     from .views import main_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
+
+    # Friendly 500 so users don't see a raw error page
+    @app.errorhandler(500)
+    def _error_500(e):
+        print("GLOBAL 500:", repr(e))
+        # Reuse base layout with a simple message
+        return render_template('base.html', _message="Server error. Please try again."), 500
 
     # Create DB tables on first run
     with app.app_context():
