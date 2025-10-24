@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-3">Find a Doctor</h1>
+<div class="row g-3">
+  {% for d in doctors %}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Dr. {{ d.full_name }}</h5>
+        <p class="card-text">{{ d.email }}</p>
+        {% if not current_user.is_authenticated or not current_user.is_doctor %}
+  <a class="btn btn-primary" href="{{ url_for('main.book_slot', doctor_id=d.id) }}">Book an Appointment</a>
+{% endif %}
+
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p>No doctors yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

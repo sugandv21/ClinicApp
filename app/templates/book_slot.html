@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-3">Book Dr. {{ doctor.full_name }}</h3>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <input type="date" class="form-control" name="date" value="{{ selected_date.isoformat() }}">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary">Change Date</button>
+  </div>
+</form>
+
+<form method="post">
+  <div class="row g-2">
+    {% for t in available_times %}
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="form-check border rounded p-2 h-100">
+          <input class="form-check-input" type="radio" name="time" id="t{{ loop.index }}" value="{{ t.strftime('%H:%M') }}">
+          <label class="form-check-label" for="t{{ loop.index }}">{{ t.strftime('%H:%M') }}</label>
+        </div>
+      </div>
+    {% else %}
+      <p>No free slots for selected date.</p>
+    {% endfor %}
+  </div>
+  <div class="mt-3">
+    <button class="btn btn-primary" {% if not available_times %}disabled{% endif %}>Book Appointment</button>
+  </div>
+</form>
+{% endblock %}

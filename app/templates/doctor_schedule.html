@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-3">My Availability</h3>
+<form method="post" class="row g-3">
+  <div class="col-12 col-md-3">
+    <label class="form-label">Date</label>
+    <input type="date" name="date" class="form-control" required>
+  </div>
+  <div class="col-6 col-md-3">
+    <label class="form-label">Start</label>
+    <input type="time" name="start_time" class="form-control" required>
+  </div>
+  <div class="col-6 col-md-3">
+    <label class="form-label">End</label>
+    <input type="time" name="end_time" class="form-control" required>
+  </div>
+  <div class="col-12 col-md-3">
+    <label class="form-label">Slot (minutes)</label>
+    <input type="number" name="slot_minutes" min="5" value="30" class="form-control" required>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-success">Add Availability</button>
+  </div>
+</form>
+<hr>
+<h5>Saved</h5>
+<div class="table-responsive">
+<table class="table table-sm">
+  <thead><tr><th>Date</th><th>Start</th><th>End</th><th>Slot</th></tr></thead>
+  <tbody>
+  {% for a in avail %}
+    <tr>
+      <td>{{ a.date.strftime('%d-%m-%Y') }}</td>
+      <td>{{ a.start_time.strftime('%H:%M') }}</td>
+      <td>{{ a.end_time.strftime('%H:%M') }}</td>
+      <td>{{ a.slot_minutes }} min</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="4" class="text-center">No availability yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

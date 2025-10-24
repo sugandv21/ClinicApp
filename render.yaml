@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: clinic-booking-flask
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite:///sqlite.db
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+
+  - type: cron
+    name: clinic-reminders
+    schedule: "*/30 * * * *"
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: |
+      python - <<'PY'
+      import os, requests
+      url = os.environ.get('WEB_SERVICE_URL') or 'https://YOUR-RENDER-URL.onrender.com'
+      token = os.environ.get('CRON_SECRET','')
+      try:
+        r = requests.get(f"{url}/tasks/send_reminders", params={'token': token}, timeout=20)
+        print("Cron response:", r.status_code, r.text[:200])
+      except Exception as e:
+        print("Cron error:", e)
+      PY
+    envVars:
+      - key: WEB_SERVICE_URL
+        value: https://your-web-service.onrender.com
+      - key: CRON_SECRET
+        sync: false

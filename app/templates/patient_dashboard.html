@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-3">My Appointments</h3>
+<a class="btn btn-primary mb-3" href="{{ url_for('main.doctors_list') }}">Book More</a>
+<div class="table-responsive">
+<table class="table table-bordered align-middle">
+  <thead><tr><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for a in appts %}
+    <tr>
+      <td>Dr. {{ a.doctor.full_name }}</td>
+      <td>{{ a.date.strftime('%d-%m-%Y') }}</td>
+      <td>{{ a.time.strftime('%H:%M') }}</td>
+      <td><span class="badge bg-secondary">{{ a.status }}</span></td>
+    </tr>
+  {% else %}
+    <tr><td colspan="4" class="text-center">No appointments yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
