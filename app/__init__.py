@@ -23,12 +23,13 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Mail (reuses Django-like env keys provided)
-    app.config['MAIL_SERVER'] = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-    app.config['MAIL_PORT'] = int(os.getenv('EMAIL_PORT', 587))
-    app.config['MAIL_USE_TLS'] = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-    app.config['MAIL_USERNAME'] = os.getenv('EMAIL_HOST_USER')
-    app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_HOST_PASSWORD')
-    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('DEFAULT_FROM_EMAIL', os.getenv('EMAIL_HOST_USER'))
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', os.getenv('MAIL_USERNAME'))
+
 
     # NEW: allow disabling outbound mail without code changes
     app.config['MAIL_SUPPRESS_SEND'] = os.getenv('MAIL_SUPPRESS_SEND', 'False') == 'True'
